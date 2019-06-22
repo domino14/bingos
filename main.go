@@ -42,7 +42,7 @@ type Stem struct {
 }
 
 func (s *Stem) Printable(order int) string {
-	return fmt.Sprintf("%v\t%v\t%.4f\t%v\t%.4f\t%v", order, s.Alphagram,
+	return fmt.Sprintf("|%v|%v|%.4f|%v|%.4f|%v|", order, s.Alphagram,
 		s.ModifiedStemProbability, s.UsableTiles, s.MMPR, s.StemCombinations)
 }
 
@@ -79,7 +79,9 @@ func main() {
 
 	} else if *searchType == "stems" {
 		stems := calculateStems(*searchLength, *topNStems)
-		fmt.Println("#\talpha\tMSP\tUT\tMMPR\tstemcombos")
+
+		fmt.Println("|#|alpha|MSP|UT|MMPR|stemcombos")
+		fmt.Println("-------------------------------")
 		for idx, stem := range stems {
 			fmt.Println(stem.Printable(idx + 1))
 		}
