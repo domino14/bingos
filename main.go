@@ -80,8 +80,8 @@ func main() {
 	} else if *searchType == "stems" {
 		stems := calculateStems(*searchLength, *topNStems)
 
-		fmt.Println("|#|alpha|MSP|UT|MMPR|stemcombos")
-		fmt.Println("-------------------------------")
+		fmt.Println("|#|alpha|MSP|UT|MMPR|stemcombos|")
+		fmt.Println("|-|-----|---|--|----|----------|")
 		for idx, stem := range stems {
 			fmt.Println(stem.Printable(idx + 1))
 		}

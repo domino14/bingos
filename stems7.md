@@ -2,8 +2,8 @@ Calculated with:
 ```./bingos -dawgpath=/Users/cesar/coding/aerolith-infra/lexica/dawg/ -topn 100 -type stems -length 7```
 MMPR is the power rating of the stem, thank you to Michael Baron for his method
 
-|#|alpha|MSP|UT|MMPR|stemcombos
--------------------------------
+|#|alpha|MSP|UT|MMPR|stemcombos|
+|-|-----|---|--|----|----------|
 |1|AEINST|1.5000|91|136.5000|209952|
 |2|AEIRST|1.5000|75|112.5000|209952|
 |3|AEINRT|1.5000|68|102.0000|209952|
