@@ -1,0 +1,6 @@
+github.com/domino14/macondo v0.2.4 h1:/CNYneuixLNLtl8liFfB+0EjLAqHwtv7J7LM1KAqMdg=
+github.com/domino14/macondo v0.2.4/go.mod h1:Cq/BTdsRYUKgN8iWJoSTNyJcVIWq7Fh9ujdcSG1LG08=
+github.com/domino14/word_db_server v1.0.0 h1:ZpAR/HdFFVQXulD3aWGCpTYdqfupm+Zh0960GXCXeOY=
+github.com/domino14/word_db_server v1.0.0/go.mod h1:gwcCnO83Xr/+pU+zQwr4D5q4gg+Kyyiz9Vr7cz/mhmw=
+github.com/mattn/go-sqlite3 v1.10.0 h1:jbhqpg7tQe4SupckyijYiy0mJJ/pRyHvXf7JdWK860o=
+github.com/mattn/go-sqlite3 v1.10.0/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=

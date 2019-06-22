@@ -6,8 +6,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/domino14/macondo/alphabet"
 	"github.com/domino14/macondo/anagrammer"
-	"github.com/domino14/macondo/lexicon"
+	"github.com/domino14/word_db_server/dbmaker"
 )
 
 var (
@@ -27,10 +28,10 @@ var (
 
 	topNStems    = flag.Int("topn", 100, "top N stems of this length")
 	searchLength = flag.Int("length", 7, "length of word")
-	stemLexicon  = flag.String("lexicon", "America", "name of lexicon")
+	stemLexicon  = flag.String("lexicon", "NWL18", "name of lexicon")
 )
 
-var defaultDist lexicon.LetterDistribution
+var defaultDist *alphabet.LetterDistribution
 
 type Stem struct {
 	StemCombinations        uint64
@@ -53,7 +54,7 @@ func main() {
 		return
 	}
 	anagrammer.LoadDawgs(*dawgPath)
-	defaultDist = lexicon.EnglishLetterDistribution()
+	defaultDist = alphabet.EnglishLetterDistribution()
 
 	wordPrinter := func(words []string) {
 		for _, word := range words {
@@ -97,7 +98,7 @@ func calculateTypeIs(length int) ([]string, map[string]bool) {
 	}
 	for _, stem := range stems {
 		theseWords := anagrammer.Anagram(stem.Alphagram+blanks,
-			anagrammer.Dawgs[*stemLexicon], anagrammer.ModeExact)
+			anagrammer.Dawgs[*stemLexicon].GetDawg(), anagrammer.ModeExact)
 		for _, word := range theseWords {
 			wordMap[word] = true
 		}
@@ -115,7 +116,7 @@ func calculateTypeIIs(length int) []string {
 	ret := []string{}
 	//A(3) D(1) E(4) G(1) I(3) L(1) N(2) O(2) R(2) S(2) T(2) U(1)
 	words := anagrammer.Anagram("AAADEEEEGIIILNNOORRSSTTU",
-		anagrammer.Dawgs[*stemLexicon], anagrammer.ModeBuild)
+		anagrammer.Dawgs[*stemLexicon].GetDawg(), anagrammer.ModeBuild)
 	for _, word := range words {
 		if len(word) == length {
 			_, ok := type1s[word]
@@ -130,8 +131,8 @@ func calculateTypeIIs(length int) []string {
 
 func calculateTypeIIIs(length int) []string {
 	var refCombos uint64
-	lexInfo := lexicon.LexiconInfo{
-		LetterDistribution: lexicon.EnglishLetterDistribution(),
+	lexInfo := dbmaker.LexiconInfo{
+		LetterDistribution: alphabet.EnglishLetterDistribution(),
 	}
 	lexInfo.Initialize()
 	if length == 7 {
@@ -162,7 +163,7 @@ func calculateTypeIIIs(length int) []string {
 
 func allWords(length int) []string {
 	return anagrammer.Anagram(strings.Repeat("?", length),
-		anagrammer.Dawgs[*stemLexicon], anagrammer.ModeExact)
+		anagrammer.Dawgs[*stemLexicon].GetDawg(), anagrammer.ModeExact)
 }
 
 // Calculate the top `stemCutoff` stems of length `length - 1`
@@ -179,7 +180,7 @@ func calculateStems(length int, stemCutoff int) []Stem {
 	return stems[:stemCutoff]
 }
 
-func modifiedS(dist lexicon.LetterDistribution) lexicon.LetterDistribution {
+func modifiedS(dist *alphabet.LetterDistribution) *alphabet.LetterDistribution {
 	// Takes the distribution and modifies it to add 6 instead of 4 Ss
 	// This is to keep in line with Mike Baron's calculation method for MMPR.
 	dist.Distribution['S'] = 6
@@ -194,7 +195,7 @@ func stemDecompose(word string, stemMap map[string]map[rune]bool) {
 
 	for idx, char := range word {
 		stem := word[:idx] + word[idx+1:]
-		stemAlpha := lexicon.Word{Word: stem, Dist: defaultDist}.MakeAlphagram()
+		stemAlpha := alphabet.Word{Word: stem, Dist: defaultDist}.MakeAlphagram()
 		_, ok := stemMap[stemAlpha]
 		if !ok {
 			stemMap[stemAlpha] = make(map[rune]bool)
@@ -220,8 +221,8 @@ func calcUsableTiles(stemAlpha string, tileMap map[rune]bool) uint8 {
 
 // Take stemMap and create a sorted slice of stems.
 func processStems(stemMap map[string]map[rune]bool) []Stem {
-	lexInfo := lexicon.LexiconInfo{
-		LetterDistribution: modifiedS(lexicon.EnglishLetterDistribution()),
+	lexInfo := dbmaker.LexiconInfo{
+		LetterDistribution: modifiedS(alphabet.EnglishLetterDistribution()),
 	}
 	lexInfo.Initialize()
 

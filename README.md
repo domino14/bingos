@@ -1,0 +1,1 @@
+This codebase is for the calculations of type I, type II and type III bingos in Scrabble. These terms are taken from Michael Baron's wordbook, and we use his methodology for the calculation of MMPR, a measure of the "power" of a stem.
