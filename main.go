@@ -255,7 +255,10 @@ func (a ByMMPR) Len() int      { return len(a) }
 func (a ByMMPR) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a ByMMPR) Less(i, j int) bool {
 	if a[i].MMPR == a[j].MMPR {
-		return a[i].Alphagram < a[j].Alphagram
+		if a[i].ModifiedStemProbability == a[j].ModifiedStemProbability {
+			return a[i].Alphagram < a[j].Alphagram
+		}
+		return a[i].ModifiedStemProbability > a[j].ModifiedStemProbability
 	}
 	return a[i].MMPR > a[j].MMPR
 }
