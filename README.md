@@ -2,19 +2,15 @@ This codebase is for the calculations of type I, type II and type III bingos in 
 
 His methodology results in slightly different results. Taking OWL2 as a lexicon, and comparing the generated stems, we can see there is a slight disagreement at number 5:
 
-```
 |#|alpha|MSP|UT|MMPR|
 |-|-----|---|--|----|
 |5|EINORS|1.3333|68|90.6667|
-```
 
-Whereas the book cites the following:
+Whereas the book (https://www.amazon.com/SCRABBLE%C2%99-Wordbook-Mike-Baron/dp/1402750862) cites the following:
 
-```
 |#|alpha|MSP|UT|MMPR|
 |-|-----|---|--|----|
 |5|EINORS|1.333|68|90.644|
-```
 
 The 90.644 seems to have come from 1.333 * 68 (as opposed to using the full number and multiplying 4/3 * 68).
 
