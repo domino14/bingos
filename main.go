@@ -185,8 +185,16 @@ func calculateStems(length int, stemCutoff int) []Stem {
 func modifiedS(dist *alphabet.LetterDistribution) *alphabet.LetterDistribution {
 	// Takes the distribution and modifies it to add 6 instead of 4 Ss
 	// This is to keep in line with Mike Baron's calculation method for MMPR.
-	dist.Distribution['S'] = 6
+	// Note that we use a hack here; Baron's MMPR method only counts the
+	// very FIRST S as a 6-freq tile. So we have to convert only one S to
+	// this dollar sign :|
+	dist.Distribution['$'] = 6
+	dist.Distribution['S'] = 3
 	return dist
+}
+
+func modifiedStem(stem string) string {
+	return strings.Replace(stem, "S", "$", 1)
 }
 
 // Decompose word into all substrings of word length less than 1, and add
@@ -230,9 +238,9 @@ func processStems(stemMap map[string]map[rune]bool) []Stem {
 
 	var baseStemCombos uint64
 	if *searchLength == 7 {
-		baseStemCombos = lexInfo.Combinations("AEINST", false)
+		baseStemCombos = lexInfo.Combinations(modifiedStem("AEINST"), false)
 	} else if *searchLength == 8 {
-		baseStemCombos = lexInfo.Combinations("AEINRST", false)
+		baseStemCombos = lexInfo.Combinations(modifiedStem("AEINRST"), false)
 	}
 	stems := []Stem{}
 	for stemAlpha, tiles := range stemMap {
@@ -240,7 +248,13 @@ func processStems(stemMap map[string]map[rune]bool) []Stem {
 
 		s.Alphagram = stemAlpha
 		s.UsableTiles = calcUsableTiles(stemAlpha, tiles)
-		s.StemCombinations = lexInfo.Combinations(stemAlpha, false)
+		// Replace only the first S with a $ sign, only for purposes of calculating MSP.
+		// The frequency of $ is set artificially at 6. See the modifiedS function.
+		s.StemCombinations = lexInfo.Combinations(modifiedStem(stemAlpha), false)
+		// The 1.5 below comes from the "base" MSP being set at 1.5 according
+		// to Mike's method.
+		// From his book: TISANE's MSP thus became 1.500
+		// So we need to normalize to 1.5.
 		s.ModifiedStemProbability = 1.5 * (float64(s.StemCombinations) / float64(baseStemCombos))
 		s.MMPR = s.ModifiedStemProbability * float64(s.UsableTiles)
 		stems = append(stems, s)
